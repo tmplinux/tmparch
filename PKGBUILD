@@ -1,9 +1,9 @@
 pkgname=tmparch
-pkgver=2.2.1
+pkgver=2.3.0
 pkgrel=1
 pkgdesc="Part of the tmplinux suite. Temporary Arch Linux"
 arch=('any')
-url="https://github.com/TheOddCell/tmparch"
+url="https://github.com/tmplinux/tmparch"
 license=('MIT')
 depends=('bash' 'arch-install-scripts' 'shadow' 'util-linux' 'systemd' 'squashfs-tools')
 makedepends=()

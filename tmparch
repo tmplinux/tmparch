@@ -2,21 +2,18 @@
 set -e
 ((EUID==0)) || { echo "run as root"; exit 1; }
 
-COPY="/var/lib/tmplinux/tmparch"
 SFS="/var/lib/tmplinux/tmparch.sfs"
 TMP=$(mktemp -d /tmp/container-XXXX)
 trap 'rm -rf "$TMP"' EXIT
 
 rm /var/lib/tmp*.sfs 2>/dev/null||true # removing all tmp* from before unification into tmplinux
 [[ -f $SFS ]] || {
-  mkdir -p "$COPY"
-  pacstrap "$COPY" base base-devel "$@"
-  passwd --root "$COPY" -d root
-  mksquashfs "$COPY" "$SFS" -comp zstd
-  rm -rf "$COPY"
+  pacstrap "$TMP" base base-devel "$@"
+  passwd --root "$TMP" -d root
+  mksquashfs "$TMP" "$SFS" -comp zstd
 }
 
-unsquashfs -f -d "$TMP" "$SFS"
+[[ -f "$TMP/etc/os-release" ]] || unsquashfs -f -d "$TMP" "$SFS"
 basename "$TMP" > /run/tmparch
 systemd-nspawn -D "$TMP" --boot -E TERM=linux
 rm /run/tmparch
