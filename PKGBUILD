@@ -1,5 +1,5 @@
 pkgname=tmparch
-pkgver=2.3.0
+pkgver=3.0.0
 pkgrel=1
 pkgdesc="Part of the tmplinux suite. Temporary Arch Linux"
 arch=('any')
