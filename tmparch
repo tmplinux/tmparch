@@ -9,4 +9,4 @@ issfs || {
   mksquashfs "$TMP" "$SFS" -comp zstd
 }
 
-boot
+boot $1
