@@ -1,12 +1,19 @@
 #!/bin/bash
-source /usr/lib/libtmplinux.sh
-NAME=arch
-init
+set -e
+((EUID==0)) || { echo "run as root"; exit 1; }
 
-issfs || {
+SFS="/var/lib/tmplinux/tmparch.sfs"
+TMP=$(mktemp -d /tmp/container-XXXX)
+trap 'rm -rf "$TMP"' EXIT
+
+rm /var/lib/tmp*.sfs 2>/dev/null||true # removing all tmp* from before unification into tmplinux
+[[ -f $SFS ]] || {
   pacstrap "$TMP" base base-devel "$@"
   passwd --root "$TMP" -d root
   mksquashfs "$TMP" "$SFS" -comp zstd
 }
 
-boot $1
+[[ -f "$TMP/etc/os-release" ]] || unsquashfs -f -d "$TMP" "$SFS"
+basename "$TMP" > /run/tmparch
+systemd-nspawn -D "$TMP" --boot -E TERM=linux
+rm /run/tmparch
