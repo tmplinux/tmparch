@@ -2,6 +2,7 @@
 set -e
 ((EUID==0)) || { echo "run as root"; exit 1; }
 
+mkdir /var/lib/tmplinux -p
 SFS="/var/lib/tmplinux/tmparch.sfs"
 TMP=$(mktemp -d /tmp/container-XXXX)
 trap 'rm -rf "$TMP"' EXIT
